@@ -22,8 +22,47 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 // some of this code was written by <cstone@pobox.com> originally; it is in the public domain.
 */
 
+///must have libs
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
 
+//uC specific libs
+#include "tim.h"
+#include "gpio.h"
+#include "stm32f4xx.h"
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+//pin defines (you can change the values on the right to match your uC)
+//when using hardware SPI you don't use those apart from resets
+#define CS_pin CS_Pin
+#define CS_port CS_GPIO_Port
+
+#define RST_pin RSE_Pin
+#define RST_port RSE_GPIO_Port
+
+#define RS_pin RS_Pin
+#define RS_port RS_GPIO_Port
+
+#define SCLK_pin SCL_Pin
+#define SCLK_port SCL_GPIO_Port
+
+#define SID_pin SI_Pin
+#define SID_port SI_GPIO_Port
+
+#define GPIO_PIN_SET 1
+#define GPIO_PIN_RESET 0
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+//bit value macro
+#define _BV(bit)(1 << (bit))
+
+//swap two uint8_t values macro
 #define swap(a, b) { uint8_t t = a; a = b; b = t; }
 
 #define BLACK 1
@@ -71,29 +110,30 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #define CMD_NOP  0xE3
 #define CMD_TEST  0xF0
 
-  void ST7565_st7565_init(void);
-  void ST7565_begin(uint8_t contrast);
-  void ST7565_st7565_command(uint8_t c);
-  void ST7565_st7565_data(uint8_t c);
-  void ST7565_st7565_set_brightness(uint8_t val);
-  void ST7565_clear_display(void);
-  void ST7565_clear();
-  void ST7565_display();
+void ST7565_st7565_init(void);
+void ST7565_begin(uint8_t contrast);
+void ST7565_st7565_command(uint8_t c);
+void ST7565_st7565_data(uint8_t c);
+void ST7565_st7565_set_brightness(uint8_t val);
+void ST7565_clear_display(void);
+void ST7565_clear();
+void ST7565_display();
 
-  void ST7565_setpixel(uint8_t x, uint8_t y, uint8_t color);
-  uint8_t ST7565_getpixel(uint8_t x, uint8_t y);
-  void ST7565_fillcircle(uint8_t x0, uint8_t y0, uint8_t r, uint8_t color);
-  void ST7565_drawcircle(uint8_t x0, uint8_t y0, uint8_t r, uint8_t color);
-  void ST7565_drawrect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
-  void ST7565_fillrect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
-  void ST7565_drawline(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
-  void ST7565_drawchar(uint8_t x, uint8_t line, char c);
-  void ST7565_drawstring(uint8_t x, uint8_t line, char *c);
-  void ST7565_drawstring_P(uint8_t x, uint8_t line, const char *c);
+void ST7565_setpixel(uint8_t x, uint8_t y, uint8_t color);
+uint8_t ST7565_getpixel(uint8_t x, uint8_t y);
+void ST7565_fillcircle(uint8_t x0, uint8_t y0, uint8_t r, uint8_t color);
+void ST7565_drawcircle(uint8_t x0, uint8_t y0, uint8_t r, uint8_t color);
+void ST7565_drawrect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
+void ST7565_fillrect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t color);
+void ST7565_drawline(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color);
+void ST7565_drawchar(uint8_t x, uint8_t line, char c);
+void ST7565_drawstring(uint8_t x, uint8_t line, char* c);
+void ST7565_drawstring_P(uint8_t x, uint8_t line, const char* c);
 
-  void ST7565_drawbitmap(uint8_t x, uint8_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, uint8_t color);
+void ST7565_drawbitmap(uint8_t x, uint8_t y, const uint8_t* bitmap, uint8_t w, uint8_t h, uint8_t color);
 
-  void ST7565_spiwrite(uint8_t c);
+void ST7565_spiwrite(uint8_t c);
 
-  void ST7565_my_setpixel(uint8_t x, uint8_t y, uint8_t color);
+void ST7565_my_setpixel(uint8_t x, uint8_t y, uint8_t color);
+
 
