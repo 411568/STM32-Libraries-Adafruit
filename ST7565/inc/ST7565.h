@@ -132,6 +132,7 @@ void ST7565_drawstring_P(uint8_t x, uint8_t line, const char* c);
 
 void ST7565_drawbitmap(uint8_t x, uint8_t y, const uint8_t* bitmap, uint8_t w, uint8_t h, uint8_t color);
 
+//change this function when you want to use hardware SPI in your uC
 void ST7565_spiwrite(uint8_t c);
 
 void ST7565_my_setpixel(uint8_t x, uint8_t y, uint8_t color);
