@@ -1,26 +1,11 @@
 /*
-$Id:$
+ * how to use:
+ * ST7565_begin(0x7);
+   ST7565_clear();
+  --- rysowanie ---
+   ST7565_display();
+ */
 
-ST7565 LCD library!
-
-Copyright (C) 2010 Limor Fried, Adafruit Industries
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
-// some of this code was written by <cstone@pobox.com> originally; it is in the public domain.
-*/
 
 ///must have libs
 #include <stdint.h>
@@ -32,6 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include "tim.h"
 #include "gpio.h"
 #include "stm32f4xx.h"
+#include "spi.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -136,5 +122,3 @@ void ST7565_drawbitmap(uint8_t x, uint8_t y, const uint8_t* bitmap, uint8_t w, u
 void ST7565_spiwrite(uint8_t c);
 
 void ST7565_my_setpixel(uint8_t x, uint8_t y, uint8_t color);
-
-
