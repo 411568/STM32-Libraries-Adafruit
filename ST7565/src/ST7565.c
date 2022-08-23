@@ -1,27 +1,3 @@
-/*
-$Id:$
-
-ST7565 LCD library!
-
-Copyright (C) 2010 Limor Fried, Adafruit Industries
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
-// some of this code was written by <cstone@pobox.com> originally; it is in the public domain.
-*/
-
 #include "ST7565.h"
 
 #define ST7565_STARTBYTES 0
@@ -360,7 +336,8 @@ void ST7565_begin(uint8_t contrast)
 
 
 //basic init
-void ST7565_st7565_init(void) {
+void ST7565_st7565_init(void)
+{
 	// toggle RST low to reset; CS low so it'll listen to us
 	HAL_GPIO_WritePin(CS_port, CS_pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(RST_port, RST_pin, GPIO_PIN_RESET);
@@ -395,17 +372,23 @@ void ST7565_st7565_init(void) {
 	ST7565_st7565_command(CMD_SET_RESISTOR_RATIO | 0x6);
 
 	// set up a bounding box for screen updates
-
 	ST7565_updateBoundingBox(0, 0, LCDWIDTH - 1, LCDHEIGHT - 1);
 }
 
-//send byte through SPI (works through GPIO and not hardware SPI)
+//send byte through SPI
 inline void ST7565_spiwrite(uint8_t c)
 {
+	//stm32f4xx specific
+	HAL_SPI_Transmit(&hspi3, (uint8_t *)&c, sizeof(uint8_t), 1000);
+	while(HAL_SPI_GetState(&hspi3) != HAL_SPI_STATE_READY);
+
+
+	//can use this for any uC
+/*
 	for(int8_t i = 7; i >= 0; --i)
 	{
 		HAL_GPIO_WritePin(SCLK_port, SCLK_pin, GPIO_PIN_RESET);
-		HAL_Delay(1);
+		//HAL_Delay(1);
 		if (c & (1 << i))
 		{
 			HAL_GPIO_WritePin(SID_port, SID_pin, GPIO_PIN_SET);
@@ -416,9 +399,11 @@ inline void ST7565_spiwrite(uint8_t c)
 		}
 		HAL_GPIO_WritePin(SCLK_port, SCLK_pin, GPIO_PIN_SET);
 	}
+
+	*/
 }
 
-	//send a single command
+	//send a single comma nd
 	void ST7565_st7565_command(uint8_t c)
 	{
 		HAL_GPIO_WritePin(RS_port, RS_pin, GPIO_PIN_RESET);
@@ -497,7 +482,8 @@ inline void ST7565_spiwrite(uint8_t c)
 	void ST7565_clear(void) 
 	{
 		memset(st7565_buffer, 0, 1024);
-		ST7565_updateBoundingBox(0, 0, LCDWIDTH - 1, LCDHEIGHT - 1);
+		ST7565_updateBoundingBox(0, 0, LCDWIDTH, LCDHEIGHT);
+		//ST7565_updateBoundingBox(0, 0, LCDWIDTH - 1, LCDHEIGHT - 1); //this doesn't work for some reason
 	}
 
 
@@ -517,4 +503,3 @@ inline void ST7565_spiwrite(uint8_t c)
 			}
 		}
 	}
-
